@@ -38,6 +38,9 @@ android {
     buildFeatures{
         dataBinding = true
     }
+    viewBinding{
+        enable = true
+    }
 }
 
 dependencies {
@@ -53,11 +56,15 @@ dependencies {
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
+    kapt (libs.androidx.room.compiler)
+    androidTestImplementation(libs.androidx.room.testing)
 
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
-
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.lifecycle.common.java8)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation (libs.androidx.lifecycle.livedata.ktx)
 
 }
