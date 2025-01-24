@@ -10,5 +10,6 @@ data class DigiModel (
     val description: String,
     val level: String,
     val attribute: String,
-    val type: String
+    val type: String,
+    val image:String
 )

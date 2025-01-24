@@ -1,5 +1,6 @@
 package com.example.digidex.repositories
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.digidex.apiconfig.RetrofitInstance
 import com.example.digidex.database.Dao.DigiDao
@@ -45,8 +46,17 @@ class DigiRepository(
     }
 
     suspend fun fetchAndSaveDigimons() {
-        val digimons = RetrofitInstance.api.getDigimons()
-        digimons.forEach { digiDao.insertDigimon(it) }
+        try {
+            val response = RetrofitInstance.api.getDigimons()
+            if (response.isSuccessful) {
+                val digimons = response.body()?.content
+                digimons?.forEach { digiDao.insertDigimon(it) }
+            } else {
+                Log.e("API_ERROR", "Response not successful: ${response.errorBody()?.string()}")
+            }
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "Failed to fetch and save digimons", e)
+        }
     }
 
 }

@@ -1,6 +1,8 @@
 package com.example.digidex
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -45,6 +47,15 @@ class MainActivity : AppCompatActivity() {
     private fun initsetup() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
+
+        binding.fab.setOnClickListener{
+            binding.fab.isEnabled = false
+            val dialog = NewDigiDexFragment()
+            dialog.show(supportFragmentManager, "AddTask")
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.fab.isEnabled = true
+            }, 1000)
+        }
 
         digidexViewModel.allDigiDexes.observe(this) { digidexes ->
             if (digidexes.isNullOrEmpty()) {
