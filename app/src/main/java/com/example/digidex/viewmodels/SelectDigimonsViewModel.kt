@@ -19,10 +19,9 @@ class SelectDigimonsViewModel : ViewModel() {
             try {
                 val response = RetrofitInstance.api.getDigimons()
                 if (response.isSuccessful) {
-                    val digimons = response.body()?.content
-                    Log.d("Digimons", digimons.toString())
+                    _digimons.value = response.body()?.content
+                    Log.d("Digimons", response.body()?.content.toString())
                     Log.d("API_SUCCESS", "Digimons fetched successfully")
-                    // Aqui você pode usar os dados conforme necessário, sem armazená-los
                 } else {
                     Log.e("API_ERROR", "Response not successful: ${response.errorBody()?.string()}")
                 }
@@ -30,8 +29,6 @@ class SelectDigimonsViewModel : ViewModel() {
                 Log.e("API_ERROR", "Failed to fetch digimons", e)
             }
         }
-
-
     }
     fun selectDigimon(digimon: DigiModel) {}
 

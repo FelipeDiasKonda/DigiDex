@@ -18,7 +18,6 @@ class SelectDigimonsActivity : AppCompatActivity() {
     private val viewModel: SelectDigimonsViewModel by viewModels()
     private val adapter: DigimonAdapter by lazy {
         DigimonAdapter { digimon ->
-
         }
     }
 
@@ -35,7 +34,5 @@ class SelectDigimonsActivity : AppCompatActivity() {
             Log.d("DATA_OBSERVED", "Digimons observed")
             adapter.submitList(digimons)
         }
-
-
     }
 }

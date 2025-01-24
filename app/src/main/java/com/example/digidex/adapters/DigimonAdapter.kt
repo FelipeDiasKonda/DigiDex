@@ -10,7 +10,8 @@ import com.example.digidex.database.models.DigiModel
 import com.example.digidex.databinding.DigimonItemBinding
 
 
-class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<DigiModel, DigimonAdapter.DigimonViewHolder>(DiffCallback()) {
+class DigimonAdapter(private val onClick: (DigiModel) -> Unit) :
+    ListAdapter<DigiModel, DigimonAdapter.DigimonViewHolder>(DiffCallback()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DigimonViewHolder {
@@ -23,7 +24,10 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<Dig
         holder.bind(digimon)
     }
 
-    class DigimonViewHolder(private val binding: DigimonItemBinding, val onClick: (DigiModel) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+    class DigimonViewHolder(
+        private val binding: DigimonItemBinding,
+        val onClick: (DigiModel) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
         private var currentDigimon: DigiModel? = null
 
         init {
