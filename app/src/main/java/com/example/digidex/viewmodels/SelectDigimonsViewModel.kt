@@ -30,7 +30,4 @@ class SelectDigimonsViewModel : ViewModel() {
             }
         }
     }
-    fun selectDigimon(digimon: DigiModel) {}
-
-    fun completeSelection() {}
 }
