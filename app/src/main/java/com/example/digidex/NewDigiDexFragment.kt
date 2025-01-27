@@ -67,8 +67,6 @@ class NewDigiDexFragment : BottomSheetDialogFragment() {
             if (title.isNotBlank()) {
                 val newDigiDex = DigiDexModel(id, title, description)
                 addDigiDexViewModel.addDigiDex(newDigiDex)
-
-
                 val intent = Intent(requireContext(), SelectDigimonsActivity::class.java)
                 startActivity(intent)
             } else {

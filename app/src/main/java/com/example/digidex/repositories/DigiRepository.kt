@@ -21,7 +21,7 @@ class DigiRepository(
 
     suspend fun insertDigiDex(digiDexModel: DigiDexModel) {
         withContext(defaultDispatcher) {
-         digiDao.insertDigiDex(digiDexModel)
+            digiDao.insertDigiDex(digiDexModel)
         }
     }
 
@@ -31,7 +31,7 @@ class DigiRepository(
         }
     }
 
-    suspend fun insertDigiDexDigimonCrossRef(crossRef: DigidexDigimonModel) {
+    suspend fun insertDigiDexDigimonCrossRef(crossRef: List<DigidexDigimonModel>) {
         withContext(defaultDispatcher) {
             digiDao.insertDigiDexDigimonCrossRef(crossRef)
         }
@@ -56,6 +56,24 @@ class DigiRepository(
             }
         } catch (e: Exception) {
             Log.e("API_ERROR", "Failed to fetch and save digimons", e)
+        }
+    }
+
+    suspend fun addDigimonsToDigidex(digidexId: Int, digimons: List<DigiModel>) {
+        withContext(defaultDispatcher) {
+            val existingDigimons = digiDao.getDigimonsId()
+            val newDigimons = digimons.filter { digimon -> digimon.id !in existingDigimons }
+
+            if (newDigimons.isNotEmpty()) {
+                digiDao.insertDigimons(newDigimons)
+            }
+            val relationship = digimons.map { digimon ->
+                DigidexDigimonModel(
+                    digidexId = digidexId,
+                    digimonId = digimon.id
+                )
+            }
+            digiDao.insertDigiDexDigimonCrossRef(relationship)
         }
     }
 

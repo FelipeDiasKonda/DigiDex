@@ -33,7 +33,7 @@ class DigiDexViewModel(application: Application) : AndroidViewModel(application)
         repository.insertDigimon(digimon)
     }
 
-    fun insertDigiDexDigimonCrossRef(crossRef: DigidexDigimonModel) = viewModelScope.launch {
+    fun insertDigiDexDigimonCrossRef(crossRef: List<DigidexDigimonModel>) = viewModelScope.launch {
         repository.insertDigiDexDigimonCrossRef(crossRef)
     }
 

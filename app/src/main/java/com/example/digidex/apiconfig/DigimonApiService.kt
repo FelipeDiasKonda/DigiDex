@@ -17,7 +17,7 @@ interface DigimonApiService {
         @Query("xAntibody") xAntibody: Boolean? = null,
         @Query("level") level: String? = null,
         @Query("page") page: Int? = null,
-        @Query("pageSize") pageSize: Int? = null
+        @Query("pageSize") pageSize: Int? = 1460
     ): Response<DigimonsResponse>
 
     data class DigimonsResponse(

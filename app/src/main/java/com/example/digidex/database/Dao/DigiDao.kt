@@ -27,6 +27,9 @@ interface DigiDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDigimon(digimon: DigiModel)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDigimons(digimons: List<DigiModel>)
+
     @Query("SELECT * FROM digi_table")
     fun getAllDigimons(): LiveData<List<DigiModel>>
 
@@ -34,9 +37,12 @@ interface DigiDao {
     fun getDigimonsExcluding(excludedIds: List<Int>): LiveData<List<DigiModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDigiDexDigimonCrossRef(crossRef: DigidexDigimonModel)
+    suspend fun insertDigiDexDigimonCrossRef(crossRef: List<DigidexDigimonModel>)
 
     @Transaction
     @Query("SELECT * FROM digidex_table WHERE id = :digidexId")
     fun getDigiDexWithDigimons(digidexId: Int): LiveData<DigiDexWithDigimons>
+
+    @Query("select id from digi_table")
+    suspend fun getDigimonsId(): List<Int>
 }

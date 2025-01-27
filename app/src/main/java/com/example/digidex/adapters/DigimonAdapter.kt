@@ -15,6 +15,8 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<Dig
 
     private var selectedPosition: Int = RecyclerView.NO_POSITION
 
+    private val selectedDidimons = mutableSetOf<Int>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DigimonViewHolder {
         val binding = DigimonItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return DigimonViewHolder(binding, onClick)
@@ -22,7 +24,7 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<Dig
 
     override fun onBindViewHolder(holder: DigimonViewHolder, position: Int) {
         val digimon = getItem(position)
-        holder.bind(digimon, position == selectedPosition)
+        holder.bind(digimon, selectedDidimons.contains(digimon.id))
     }
 
     inner class DigimonViewHolder(private val binding: DigimonItemBinding, val onClick: (DigiModel) -> Unit) : RecyclerView.ViewHolder(binding.root) {
@@ -31,7 +33,12 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<Dig
         init {
             itemView.setOnClickListener {
                 currentDigimon?.let {
-                    onClick(it)
+                    if(selectedDidimons.contains(it.id)){
+                        selectedDidimons.remove(it.id)
+                    }else{
+                        selectedDidimons.add(it.id)
+                    }
+                    notifyItemChanged(adapterPosition)
                 }
             }
 
@@ -52,6 +59,10 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<Dig
             itemView.isSelected = isSelected
             itemView.setBackgroundColor(if (isSelected) Color.LTGRAY else Color.TRANSPARENT)
         }
+    }
+
+    fun getSelectedDigimons(): List<Int>{
+        return selectedDidimons.toList()
     }
 
     class DiffCallback : DiffUtil.ItemCallback<DigiModel>() {
