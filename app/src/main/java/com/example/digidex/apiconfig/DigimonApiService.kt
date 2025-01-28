@@ -24,9 +24,25 @@ interface DigimonApiService {
         val content: List<DigiModel>
     )
 
-    @GET("digimon/{id}")
-    suspend fun getDigimonById(@Path("id") id: Int): DigiDexModel
+    @GET("attribute")
+    suspend fun getAttributes(): Response<AttributesResponse>
 
-    @GET("digimon/{name}")
-    suspend fun getDigimonByName(@Path("name") name: String): DigiModel
+    data class AttributesResponse(
+        val content: List<Attribute>
+    )
+
+    data class Attribute(
+        val name: String
+    )
+
+    @GET("level")
+    suspend fun getLevels(): Response<LevelsResponse>
+
+    data class LevelsResponse(
+        val content: List<Level>
+    )
+
+    data class Level(
+        val name: String
+    )
 }

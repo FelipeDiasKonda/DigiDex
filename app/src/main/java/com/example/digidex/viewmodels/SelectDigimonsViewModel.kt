@@ -19,16 +19,15 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
     private val repository: DigiRepository
     private val _digimons = MutableLiveData<List<DigiModel>>()
     val digimons: LiveData<List<DigiModel>> get() = _digimons
-
     init{
         val dao = DigiDexDatabase(application).digiDexDao()
         repository = DigiRepository(dao)
     }
 
-    fun fetchDigimons() {
+    fun fetchDigimons(level: String? = null, attribute: String? = null) {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.getDigimons()
+                val response = RetrofitInstance.api.getDigimons(level = level, attribute = attribute)
                 if (response.isSuccessful) {
                     _digimons.value = response.body()?.content
                     Log.d("Digimons", response.body()?.content.toString())

@@ -12,4 +12,20 @@
     <string name="add_digi_dex">Add Digi-Dex</string>
     <string name="digimon_image">imagem</string>
     <string name="conclude_btn">Conclude</string>
+    <string-array name="level_filter">
+        <item>Select</item>
+        <item>Baby I</item>
+        <item>Baby II</item>
+        <item>Child</item>
+        <item>Adult</item>
+        <item>Perfect</item>
+    </string-array>
+    <string-array name="attribute_filter">
+        <item>Select</item>
+        <item>Data</item>
+        <item>Free</item>
+        <item>Virus</item>
+        <item>Vaccine</item>
+        <item>Unknown</item>
+    </string-array>
 </resources>
