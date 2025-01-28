@@ -61,12 +61,7 @@ class DigiRepository(
 
     suspend fun addDigimonsToDigidex(digidexId: Int, digimons: List<DigiModel>) {
         withContext(defaultDispatcher) {
-            val existingDigimons = digiDao.getDigimonsId()
-            val newDigimons = digimons.filter { digimon -> digimon.id !in existingDigimons }
-
-            if (newDigimons.isNotEmpty()) {
-                digiDao.insertDigimons(newDigimons)
-            }
+            digiDao.insertDigimons(digimons)
             val relationship = digimons.map { digimon ->
                 DigidexDigimonModel(
                     digidexId = digidexId,
@@ -77,4 +72,9 @@ class DigiRepository(
         }
     }
 
+    suspend fun updateDigimon(digimon: DigiModel) {
+        withContext(defaultDispatcher) {
+            digiDao.update(digimon)
+        }
+    }
 }

@@ -13,9 +13,8 @@ import com.example.digidex.databinding.DigimonItemBinding
 
 class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<DigiModel, DigimonAdapter.DigimonViewHolder>(DiffCallback()) {
 
-    private var selectedPosition: Int = RecyclerView.NO_POSITION
 
-    private val selectedDidimons = mutableSetOf<Int>()
+    private val selectedDigimons = mutableSetOf<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DigimonViewHolder {
         val binding = DigimonItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -24,27 +23,22 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<Dig
 
     override fun onBindViewHolder(holder: DigimonViewHolder, position: Int) {
         val digimon = getItem(position)
-        holder.bind(digimon, selectedDidimons.contains(digimon.id))
+        holder.bind(digimon, selectedDigimons.contains(digimon.id))
     }
 
     inner class DigimonViewHolder(private val binding: DigimonItemBinding, val onClick: (DigiModel) -> Unit) : RecyclerView.ViewHolder(binding.root) {
         private var currentDigimon: DigiModel? = null
 
         init {
-            itemView.setOnClickListener {
+            itemView.setOnLongClickListener {
                 currentDigimon?.let {
-                    if(selectedDidimons.contains(it.id)){
-                        selectedDidimons.remove(it.id)
-                    }else{
-                        selectedDidimons.add(it.id)
+                    if (selectedDigimons.contains(it.id)) {
+                        selectedDigimons.remove(it.id)
+                    } else {
+                        selectedDigimons.add(it.id)
                     }
                     notifyItemChanged(adapterPosition)
                 }
-            }
-
-            itemView.setOnLongClickListener {
-                selectedPosition = adapterPosition
-                notifyItemChanged(selectedPosition)
                 true
             }
         }
@@ -61,8 +55,8 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<Dig
         }
     }
 
-    fun getSelectedDigimons(): List<Int>{
-        return selectedDidimons.toList()
+    fun getSelectedDigimons(): List<Int> {
+        return selectedDigimons.toList()
     }
 
     class DiffCallback : DiffUtil.ItemCallback<DigiModel>() {

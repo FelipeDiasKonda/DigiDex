@@ -6,11 +6,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
 import com.example.digidex.apiconfig.RetrofitInstance
 import com.example.digidex.database.db.DigiDexDatabase
 import com.example.digidex.database.models.DigiModel
 import com.example.digidex.repositories.DigiRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SelectDigimonsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -41,15 +44,40 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    fun addDigimonstoDigidex(digidexId: Int, digimonsIds: List<DigiModel>) {
+    fun addDigimonstoDigidex(digidexId: Int, digimons: List<DigiModel>) {
         viewModelScope.launch {
             try {
-                repository.addDigimonsToDigidex(digidexId, digimonsIds)
-
+                digimons.forEach { digimon ->
+                    saveDigimon(digimon)
+                }
+                repository.addDigimonsToDigidex(digidexId, digimons)
             } catch (e: Exception) {
-                Log.e("DIGIDEX_ERROR", "Response not successful:}")
+                Log.e("DIGIDEX_ERROR", "Response not successful:}", e)
             }
+        }
+    }
+    private fun saveDigimon(digimon: DigiModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val imagePath = saveImageLocally(digimon.image)
+            val digimonModel = digimon.copy(
+                image = imagePath,
+                description = digimon.description ?: "No description available",
+                level = digimon.level ?: "Unknown",
+                attribute = digimon.attribute ?: "Unknown",
+                type = digimon.type ?: "Unknown"
+            )
+            repository.insertDigimon(digimonModel)
+        }
+    }
+    private suspend fun saveImageLocally(imageUrl: String): String {
+        return withContext(Dispatchers.IO) {
+            val futureTarget = Glide.with(getApplication<Application>().applicationContext)
+                .asFile()
+                .load(imageUrl)
+                .submit()
 
+            val file = futureTarget.get()
+            file.absolutePath
         }
     }
 }

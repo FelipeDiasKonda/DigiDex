@@ -69,15 +69,15 @@ class NewDigiDexFragment : BottomSheetDialogFragment() {
                 addDigiDexViewModel.addDigiDex(newDigiDex)
                 val intent = Intent(requireContext(), SelectDigimonsActivity::class.java)
                 startActivity(intent)
+                dialog?.dismiss()
             } else {
 
                 Toast.makeText(
                     requireContext(),
-                    "O título não pode estar vazio",
+                    "Title can´t be empty",
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
         }
     }
 }

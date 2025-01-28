@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Transaction
 import androidx.room.Query
+import androidx.room.Update
 import com.example.digidex.database.models.DigiDexModel
 import com.example.digidex.database.models.DigiDexWithDigimons
 import com.example.digidex.database.models.DigiModel
@@ -45,4 +46,7 @@ interface DigiDao {
 
     @Query("select id from digi_table")
     suspend fun getDigimonsId(): List<Int>
+
+    @Update
+    suspend fun update(digimon: DigiModel)
 }

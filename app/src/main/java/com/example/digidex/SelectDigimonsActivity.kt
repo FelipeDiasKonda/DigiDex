@@ -44,14 +44,16 @@ class SelectDigimonsActivity : AppCompatActivity() {
         }
         binding.confirmButton.setOnClickListener {
             val selectedDigimonsIds = adapter.getSelectedDigimons()
+            Log.d("SELECTED_IDS", "Selected Digimons IDs: $selectedDigimonsIds")
+            val selectedDigimons = adapter.currentList.filter { it.id in selectedDigimonsIds }
+            Log.d("SELECTED_DIGIMONS", "Selected Digimons: $selectedDigimons")
             val digidexId = intent.getIntExtra("id", -1)
-            val selectedDigimons = viewModel.allDigimons.filter { it.id in selectedDigimonsIds }
             viewModel.addDigimonstoDigidex(digidexId, selectedDigimons)
-            Toast.makeText(this, "Digimons adicionados", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Digimons added", Toast.LENGTH_SHORT).show()
             finish()
         }
-
     }
+
 
     private fun setupSpinners() {
         val levelAdapter = ArrayAdapter.createFromResource(
