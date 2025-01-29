@@ -3,7 +3,7 @@ package com.example.digidex.repositories
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
-import com.example.digidex.database.Dao.DigiDao
+import com.example.digidex.database.dao.DigiDao
 import com.example.digidex.database.models.DigiDexModel
 import com.example.digidex.database.models.DigiModel
 import com.example.digidex.database.models.DigidexDigimonModel

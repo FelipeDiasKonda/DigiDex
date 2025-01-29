@@ -106,38 +106,34 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
     }
 
     private suspend fun fetchDigimonDetails(id: Int): DigiModel? {
-        return withContext(defaultDispatcher) {
-            try {
-                val response = RetrofitInstance.api.getDigimonDetails(id)
-                if (response.isSuccessful) {
-                    val digimonDetail = response.body()
-                    Log.d("API_RESPONSE", "Fetched details for Digimon ID: $id - $digimonDetail")
+        return try {
+            val response = RetrofitInstance.api.getDigimonDetails(id)
+            if (response.isSuccessful) {
+                val digimonDetail = response.body()
+                Log.d("API_RESPONSE", "Fetched details for Digimon ID: $id - $digimonDetail")
 
-                    digimonDetail?.let {
-                        DigiModel(
-                            id = it.id,
-                            name = it.name,
-                            description = it.descriptions.firstOrNull { desc -> desc.language == "en_us" }?.description
-                                ?: "No description available",
-                            level = it.levels.firstOrNull()?.level ?: "Unknown",
-                            attribute = it.attributes.firstOrNull()?.attribute ?: "Unknown",
-                            type = it.types.firstOrNull()?.type ?: "Unknown",
-                            image = it.images.firstOrNull()?.href ?: ""
-                        )
-                    }
-                } else {
-                    Log.e(
-                        "API_ERROR",
-                        "Failed to fetch details for Digimon ID: $id - ${
-                            response.errorBody()?.string()
-                        }"
+                digimonDetail?.let {
+                    DigiModel(
+                        id = it.id,
+                        name = it.name,
+                        description = it.descriptions.firstOrNull { desc -> desc.language == "en_us" }?.description
+                            ?: "No description available",
+                        level = it.levels.firstOrNull()?.level ?: "Unknown",
+                        attribute = it.attributes.firstOrNull()?.attribute ?: "Unknown",
+                        type = it.types.firstOrNull()?.type ?: "Unknown",
+                        image = it.images.firstOrNull()?.href ?: ""
                     )
-                    null
                 }
-            } catch (e: Exception) {
-                Log.e("API_ERROR", "Exception while fetching details for Digimon ID: $id", e)
+            } else {
+                Log.e(
+                    "API_ERROR",
+                    "Failed to fetch details for Digimon ID: $id - ${response.errorBody()?.string()}"
+                )
                 null
             }
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "Exception while fetching details for Digimon ID: $id", e)
+            null
         }
     }
 
@@ -155,5 +151,4 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
             _digimonDetails.postValue(digimon)
         }
     }
-
 }

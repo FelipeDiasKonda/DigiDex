@@ -1,4 +1,4 @@
-package com.example.digidex.database.Dao
+package com.example.digidex.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -7,7 +7,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Transaction
 import androidx.room.Query
-import androidx.room.Update
 import com.example.digidex.database.models.DigiDexModel
 import com.example.digidex.database.models.DigiDexWithDigimons
 import com.example.digidex.database.models.DigiModel

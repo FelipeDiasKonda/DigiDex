@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-    private val onItemLongClickListener: (DigiDexModel) -> Unit = { digidex ->
+    private val onItemLongClickListener: (DigiDexModel) -> Unit = { _ ->
 
     }
     private val onItemClickListener: (DigiDexModel) -> Unit = { digidex ->

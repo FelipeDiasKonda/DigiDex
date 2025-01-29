@@ -28,7 +28,7 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<Dig
         holder.bind(digimon, selectedDigimons.contains(digimon.id))
     }
 
-    inner class DigimonViewHolder(private val binding: DigimonItemBinding, val onClick: (DigiModel) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+    inner class DigimonViewHolder(private val binding: DigimonItemBinding, private val onClick: (DigiModel) -> Unit) : RecyclerView.ViewHolder(binding.root) {
         private var currentDigimon: DigiModel? = null
         private var isClickable = true
 

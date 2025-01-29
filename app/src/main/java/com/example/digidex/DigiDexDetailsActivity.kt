@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.digidex.adapters.DigiDexDatabaseAdapter
-import com.example.digidex.adapters.DigimonAdapter
 import com.example.digidex.database.models.DigiModel
 import com.example.digidex.databinding.DialogDigimonDetailBinding
 import com.example.digidex.databinding.DigimonsDigidexBinding

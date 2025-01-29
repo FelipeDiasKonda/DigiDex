@@ -13,7 +13,7 @@ class DigiDexViewModel(application: Application) : AndroidViewModel(application)
 
     private val repository: DigiRepository
     val allDigiDexes: LiveData<List<DigiDexModel>>
-    val allDigimons: LiveData<List<DigiModel>>
+    private val allDigimons: LiveData<List<DigiModel>>
 
     init {
         val digiDexDao = DigiDexDatabase(application).digiDexDao()
