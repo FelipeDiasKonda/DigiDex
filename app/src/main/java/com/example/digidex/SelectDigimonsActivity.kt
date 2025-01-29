@@ -40,8 +40,6 @@ class SelectDigimonsActivity : AppCompatActivity() {
         viewModel.getLastDigiDexId().observe(this) { id ->
             digidexId = id ?: -1
             if (digidexId == -1) {
-                Log.e("DIGIDEX_ERROR", "Invalid DigiDex ID")
-                Toast.makeText(this, "Invalid DigiDex ID", Toast.LENGTH_SHORT).show()
                 finish()
                 return@observe
             }
@@ -65,17 +63,13 @@ class SelectDigimonsActivity : AppCompatActivity() {
         setupSpinners()
 
         viewModel.digimons.observe(this) { digimons ->
-            Log.d("DATA_OBSERVED", "Digimons observed")
             adapter.submitList(digimons)
         }
 
         binding.confirmButton.setOnClickListener {
             val selectedDigimonsIds = adapter.getSelectedDigimons()
-            Log.d("SELECTED_IDS", "Selected Digimons IDs: $selectedDigimonsIds")
-            val selectedDigimons = adapter.currentList.filter { it.id in selectedDigimonsIds }
-            Log.d("SELECTED_DIGIMONS", "Selected Digimons: $selectedDigimons")
             viewModel.addDigimonstoDigidex(digidexId, selectedDigimonsIds)
-            Toast.makeText(this, "Digimons added", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Digidex Created", Toast.LENGTH_SHORT).show()
             finish()
         }
     }

@@ -67,7 +67,7 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
 
 
     private fun saveDigimon(digimon: Int, digidexId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val detailedDigimon = fetchDigimonDetails(digimon)
             Log.d("DETAILED_DIGIMON", "detaild $detailedDigimon")
             if (detailedDigimon != null) {
@@ -106,7 +106,7 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
     }
 
     private suspend fun fetchDigimonDetails(id: Int): DigiModel? {
-        return withContext(Dispatchers.IO) {
+        return withContext(defaultDispatcher) {
             try {
                 val response = RetrofitInstance.api.getDigimonDetails(id)
                 if (response.isSuccessful) {
