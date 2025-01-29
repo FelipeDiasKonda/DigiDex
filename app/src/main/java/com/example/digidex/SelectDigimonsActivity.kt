@@ -27,11 +27,25 @@ class SelectDigimonsActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    private var digidexId: Int = -1
 
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        viewModel.getLastDigiDexId().observe(this) { id ->
+            digidexId = id ?: -1
+            if (digidexId == -1) {
+                Log.e("DIGIDEX_ERROR", "Invalid DigiDex ID")
+                Toast.makeText(this, "Invalid DigiDex ID", Toast.LENGTH_SHORT).show()
+                finish()
+                return@observe
+            }
+            setupUI()
+        }
+    }
+
+    private fun setupUI() {
         binding.digimonRecyclerView.layoutManager = GridLayoutManager(this, 2)
         binding.digimonRecyclerView.adapter = adapter
 
@@ -42,18 +56,17 @@ class SelectDigimonsActivity : AppCompatActivity() {
             Log.d("DATA_OBSERVED", "Digimons observed")
             adapter.submitList(digimons)
         }
+
         binding.confirmButton.setOnClickListener {
             val selectedDigimonsIds = adapter.getSelectedDigimons()
             Log.d("SELECTED_IDS", "Selected Digimons IDs: $selectedDigimonsIds")
             val selectedDigimons = adapter.currentList.filter { it.id in selectedDigimonsIds }
             Log.d("SELECTED_DIGIMONS", "Selected Digimons: $selectedDigimons")
-            val digidexId = intent.getIntExtra("id", -1)
-            viewModel.addDigimonstoDigidex(digidexId, selectedDigimons)
+            viewModel.addDigimonstoDigidex(digidexId, selectedDigimonsIds)
             Toast.makeText(this, "Digimons added", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
-
 
     private fun setupSpinners() {
         val levelAdapter = ArrayAdapter.createFromResource(

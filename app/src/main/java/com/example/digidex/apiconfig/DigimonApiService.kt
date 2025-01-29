@@ -1,6 +1,5 @@
 package com.example.digidex.apiconfig
 
-import com.example.digidex.database.models.DigiDexModel
 import com.example.digidex.database.models.DigiModel
 import retrofit2.Response
 import retrofit2.http.GET
@@ -24,25 +23,33 @@ interface DigimonApiService {
         val content: List<DigiModel>
     )
 
-    @GET("attribute")
-    suspend fun getAttributes(): Response<AttributesResponse>
+    @GET("digimon/{id}")
+    suspend fun getDigimonDetails(
+        @Path("id") id: Int
+    ): Response<DigimonDetailResponse>
 
-    data class AttributesResponse(
-        val content: List<Attribute>
+    data class DigimonDetailResponse(
+        val id: Int,
+        val name: String,
+        val xAntibody: Boolean,
+        val images: List<Image>,
+        val levels: List<Level>,
+        val types: List<Type>,
+        val attributes: List<Attribute>,
+        val fields: List<Field>,
+        val releaseDate: String,
+        val descriptions: List<Description>,
+        val skills: List<Skill>,
+        val priorEvolutions: List<Evolution>,
+        val nextEvolutions: List<Evolution>
     )
 
-    data class Attribute(
-        val name: String
-    )
-
-    @GET("level")
-    suspend fun getLevels(): Response<LevelsResponse>
-
-    data class LevelsResponse(
-        val content: List<Level>
-    )
-
-    data class Level(
-        val name: String
-    )
+    data class Image(val href: String, val transparent: Boolean)
+    data class Level(val id: Int, val level: String)
+    data class Type(val id: Int, val type: String)
+    data class Attribute(val id: Int, val attribute: String)
+    data class Field(val id: Int, val field: String, val image: String)
+    data class Description(val origin: String, val language: String, val description: String)
+    data class Skill(val id: Int, val skill: String, val translation: String, val description: String)
+    data class Evolution(val id: Int, val digimon: String, val condition: String, val image: String, val url: String)
 }

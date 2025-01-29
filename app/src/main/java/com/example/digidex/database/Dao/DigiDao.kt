@@ -34,7 +34,13 @@ interface DigiDao {
     @Query("SELECT * FROM digi_table")
     fun getAllDigimons(): LiveData<List<DigiModel>>
 
-    @Query("SELECT * FROM digi_table WHERE id NOT IN (:excludedIds)")
+    @Query("SELECT * FROM digi_table WHERE id = :digimonId")
+    suspend fun getDigimonById(digimonId: Int): DigiModel?
+
+    @Query("SELECT * FROM digidex_table WHERE id = :digidexId LIMIT 1")
+    suspend fun getDigiDexById(digidexId: Int): DigiDexModel?
+
+    @Query("SELECT * FROM digi_table WHERE id NOT IN (:excludedIds) LIMIT 1")
     fun getDigimonsExcluding(excludedIds: List<Int>): LiveData<List<DigiModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -44,9 +50,13 @@ interface DigiDao {
     @Query("SELECT * FROM digidex_table WHERE id = :digidexId")
     fun getDigiDexWithDigimons(digidexId: Int): LiveData<DigiDexWithDigimons>
 
-    @Query("select id from digi_table")
-    suspend fun getDigimonsId(): List<Int>
 
     @Update
     suspend fun update(digimon: DigiModel)
+
+    @Query("SELECT MAX(id) FROM digidex_table")
+    suspend fun getLastDigiDexId(): Int?
+
+    @Query("SELECT * FROM digidex_table WHERE id = :digidexId LIMIT 1")
+    suspend fun getDigidexById(digidexId: Int): DigiDexModel?
 }

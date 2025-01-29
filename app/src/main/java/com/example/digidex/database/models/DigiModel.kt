@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 data class DigiModel (
     @PrimaryKey  val id: Int,
     val name: String,
-    val description: String,
-    val level: String,
-    val attribute: String,
-    val type: String,
+    var description: String? = "No description available",
+    var level: String? = "Unknown",
+    var attribute: String? = "Unknown",
+    var type: String? = "Unknown",
     var image:String
 )

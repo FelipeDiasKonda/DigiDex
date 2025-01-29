@@ -31,50 +31,33 @@ class DigiRepository(
         }
     }
 
-    suspend fun insertDigiDexDigimonCrossRef(crossRef: List<DigidexDigimonModel>) {
+    suspend fun addDigimonsToDigidex(digidexId: Int, digimons: List<Int>) {
         withContext(defaultDispatcher) {
-            digiDao.insertDigiDexDigimonCrossRef(crossRef)
-        }
-    }
-
-    fun getDigiDexWithDigimons(digidexId: Int): LiveData<DigiDexWithDigimons> {
-        return digiDao.getDigiDexWithDigimons(digidexId)
-    }
-
-    fun getDigimonsExcluding(excludedIds: List<Int>): LiveData<List<DigiModel>> {
-        return digiDao.getDigimonsExcluding(excludedIds)
-    }
-
-    suspend fun fetchAndSaveDigimons() {
-        try {
-            val response = RetrofitInstance.api.getDigimons()
-            if (response.isSuccessful) {
-                val digimons = response.body()?.content
-                digimons?.forEach { digiDao.insertDigimon(it) }
-            } else {
-                Log.e("API_ERROR", "Response not successful: ${response.errorBody()?.string()}")
-            }
-        } catch (e: Exception) {
-            Log.e("API_ERROR", "Failed to fetch and save digimons", e)
-        }
-    }
-
-    suspend fun addDigimonsToDigidex(digidexId: Int, digimons: List<DigiModel>) {
-        withContext(defaultDispatcher) {
-            digiDao.insertDigimons(digimons)
             val relationship = digimons.map { digimon ->
                 DigidexDigimonModel(
                     digidexId = digidexId,
-                    digimonId = digimon.id
+                    digimonId = digimon
                 )
             }
+            Log.d("DIGIDEX_INSERT", "Inserting relationship: $relationship")
             digiDao.insertDigiDexDigimonCrossRef(relationship)
         }
     }
 
-    suspend fun updateDigimon(digimon: DigiModel) {
-        withContext(defaultDispatcher) {
-            digiDao.update(digimon)
+    suspend fun digidexExists(digidexId: Int): Boolean {
+        return withContext(defaultDispatcher) {
+            digiDao.getDigiDexById(digidexId) != null
+        }
+    }
+
+    suspend fun getLastDigiDexId(): Int? {
+        return withContext(defaultDispatcher) {
+            digiDao.getLastDigiDexId()
+        }
+    }
+    suspend fun digimonExists(digimonId: Int): Boolean {
+        return withContext(defaultDispatcher) {
+            digiDao.getDigimonById(digimonId) != null
         }
     }
 }
