@@ -2,10 +2,8 @@ package com.example.digidex.repositories
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.example.digidex.apiconfig.RetrofitInstance
 import com.example.digidex.database.Dao.DigiDao
 import com.example.digidex.database.models.DigiDexModel
-import com.example.digidex.database.models.DigiDexWithDigimons
 import com.example.digidex.database.models.DigiModel
 import com.example.digidex.database.models.DigidexDigimonModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -55,9 +53,27 @@ class DigiRepository(
             digiDao.getLastDigiDexId()
         }
     }
+
     suspend fun digimonExists(digimonId: Int): Boolean {
         return withContext(defaultDispatcher) {
             digiDao.getDigimonById(digimonId) != null
+        }
+    }
+
+    suspend fun getDigimonIdsForDigidex(digidexId: Int): List<Int> {
+        return withContext(defaultDispatcher) {
+            val digidexWithDigimons = digiDao.getDigiDexWithDigimons(digidexId).value
+            val digimonIds = digidexWithDigimons?.digimons?.map { it.id } ?: emptyList()
+            Log.d("DIGIMON_IDS", "Digimon IDs for DigiDex $digidexId: $digimonIds")
+            digimonIds
+        }
+    }
+
+    suspend fun getDigimonsByIds(digimonIds: List<Int>): List<DigiModel> {
+        return withContext(defaultDispatcher) {
+            val digimons = digimonIds.mapNotNull { digiDao.getDigimonById(it) }
+            Log.d("DIGIMONS_LOADED", "Digimons loaded: $digimons")
+            digimons
         }
     }
 }

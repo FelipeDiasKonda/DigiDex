@@ -1,6 +1,8 @@
 package com.example.digidex.adapters
 
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -28,8 +30,22 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<Dig
 
     inner class DigimonViewHolder(private val binding: DigimonItemBinding, val onClick: (DigiModel) -> Unit) : RecyclerView.ViewHolder(binding.root) {
         private var currentDigimon: DigiModel? = null
+        private var isClickable = true
+
 
         init {
+
+            itemView.setOnClickListener {
+                if (isClickable) {
+                    isClickable = false
+                    currentDigimon?.let(onClick)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        isClickable = true
+                    }, 500)
+                }
+            }
+
+
             itemView.setOnLongClickListener {
                 currentDigimon?.let {
                     if (selectedDigimons.contains(it.id)) {

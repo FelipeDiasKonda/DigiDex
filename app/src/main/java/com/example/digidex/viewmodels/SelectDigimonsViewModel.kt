@@ -22,6 +22,8 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
     private val _digimons = MutableLiveData<List<DigiModel>>()
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
     val digimons: LiveData<List<DigiModel>> get() = _digimons
+    private val _digimonDetails = MutableLiveData<DigiModel?>()
+    val digimonDetails: LiveData<DigiModel?> get() = _digimonDetails
 
     init {
         val dao = DigiDexDatabase(application).digiDexDao()
@@ -146,6 +148,12 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
             lastDigiDexId.postValue(id ?: -1)
         }
         return lastDigiDexId
+    }
+    fun fetchDigimonDetailsLiveData(id: Int) {
+        viewModelScope.launch {
+            val digimon = fetchDigimonDetails(id)
+            _digimonDetails.postValue(digimon)
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.digidex
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,7 +20,7 @@ import com.example.digidex.viewmodels.DigiDexViewModelFactory
 class MainActivity : AppCompatActivity() {
 
     private val digidexViewModel: DigiDexViewModel by lazy {
-     ViewModelProvider(this,DigiDexViewModelFactory(application))[DigiDexViewModel::class.java]
+        ViewModelProvider(this, DigiDexViewModelFactory(application))[DigiDexViewModel::class.java]
     }
 
     private val binding: ActivityMainBinding by lazy {
@@ -28,8 +29,13 @@ class MainActivity : AppCompatActivity() {
     private val onItemLongClickListener: (DigiDexModel) -> Unit = { digidex ->
 
     }
+    private val onItemClickListener: (DigiDexModel) -> Unit = { digidex ->
+        val intent = Intent(this, DigiDexDetailsActivity::class.java)
+        intent.putExtra("DIGIDEX_ID", digidex.id)
+        startActivity(intent)
+    }
     private val adapter: DigiDexAdapter by lazy {
-        DigiDexAdapter(digidexViewModel, onItemLongClickListener)
+        DigiDexAdapter(onItemClickListener, onItemLongClickListener)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
 
-        binding.fab.setOnClickListener{
+        binding.fab.setOnClickListener {
             binding.fab.isEnabled = false
             val dialog = NewDigiDexFragment()
             dialog.show(supportFragmentManager, "AddTask")
@@ -69,10 +75,5 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 }
-
-
-
-

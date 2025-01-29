@@ -26,6 +26,7 @@ class NewDigiDexFragment : BottomSheetDialogFragment() {
         ViewModelProvider(this)[AddDigiDexViewModel::class.java]
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

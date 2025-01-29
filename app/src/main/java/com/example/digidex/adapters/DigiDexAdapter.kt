@@ -6,10 +6,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.digidex.database.models.DigiDexModel
 import com.example.digidex.databinding.ItensBinding
-import com.example.digidex.viewmodels.DigiDexViewModel
 
 class DigiDexAdapter(
-    private val digidexList: DigiDexViewModel,
+    private val onItemClickListener: (DigiDexModel) -> Unit,
     private val onItemLongClickListener: (DigiDexModel) -> Unit
 ) : ListAdapter<DigiDexModel, DigiDexAdapter.DigiDexViewHolder>(DigiDexDiffCallBack()) {
 
@@ -24,6 +23,9 @@ class DigiDexAdapter(
         holder.itemView.setOnLongClickListener {
             onItemLongClickListener(currentItem)
             true
+        }
+        holder.itemView.setOnClickListener {
+            onItemClickListener(currentItem)
         }
     }
 

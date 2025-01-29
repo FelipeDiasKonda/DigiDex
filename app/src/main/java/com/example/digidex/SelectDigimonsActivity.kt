@@ -1,18 +1,21 @@
 package com.example.digidex
 
-import com.example.digidex.adapters.DigimonAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
+import com.example.digidex.adapters.DigimonAdapter
+import com.example.digidex.database.models.DigiModel
+import com.example.digidex.databinding.DialogDigimonDetailBinding
 import com.example.digidex.databinding.DigimonsListBinding
 import com.example.digidex.viewmodels.SelectDigimonsViewModel
-
 
 class SelectDigimonsActivity : AppCompatActivity() {
 
@@ -23,8 +26,9 @@ class SelectDigimonsActivity : AppCompatActivity() {
         ViewModelProvider(this)[SelectDigimonsViewModel::class.java]
     }
     private val adapter: DigimonAdapter by lazy {
-        DigimonAdapter { digimon ->
-        }
+        DigimonAdapter(
+            onClick = { digimon -> viewModel.fetchDigimonDetailsLiveData(digimon.id) },
+        )
     }
 
     private var digidexId: Int = -1
@@ -42,6 +46,14 @@ class SelectDigimonsActivity : AppCompatActivity() {
                 return@observe
             }
             setupUI()
+        }
+
+        viewModel.digimonDetails.observe(this) { digimon ->
+            digimon?.let {
+                showDigimonDetailsDialog(it)
+            } ?: run {
+                Toast.makeText(this, "Failed to fetch Digimon details", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -108,5 +120,24 @@ class SelectDigimonsActivity : AppCompatActivity() {
                 viewModel.fetchDigimons(level = if (binding.levelFilter.selectedItemPosition == 0) null else binding.levelFilter.selectedItem as String?, attribute = null)
             }
         }
+    }
+
+    private fun showDigimonDetailsDialog(digimon: DigiModel) {
+        val dialogBinding = DialogDigimonDetailBinding.inflate(layoutInflater)
+
+        dialogBinding.digimonNameTextView.text = digimon.name
+        dialogBinding.digimonDetailsTextView.text = getString(R.string.digimon_details, digimon.level, digimon.attribute, digimon.type, digimon.description)
+
+        Glide.with(this)
+            .load(digimon.image)
+            .into(dialogBinding.digimonImageView)
+
+        AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
     }
 }

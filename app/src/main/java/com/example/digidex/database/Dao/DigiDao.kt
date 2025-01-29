@@ -51,9 +51,6 @@ interface DigiDao {
     fun getDigiDexWithDigimons(digidexId: Int): LiveData<DigiDexWithDigimons>
 
 
-    @Update
-    suspend fun update(digimon: DigiModel)
-
     @Query("SELECT MAX(id) FROM digidex_table")
     suspend fun getLastDigiDexId(): Int?
 

@@ -3,6 +3,7 @@ package com.example.digidex.database.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+
 @Entity(tableName = "digi_table")
 data class DigiModel (
     @PrimaryKey  val id: Int,
