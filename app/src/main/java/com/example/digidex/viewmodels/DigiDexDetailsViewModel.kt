@@ -23,16 +23,12 @@ class DigiDexDetailsViewModel(application: Application) : AndroidViewModel(appli
     }
 
     fun loadDigimons(digidexId: Int) {
-        viewModelScope.launch {
-            try {
-                val digimonIds = repository.getDigimonIdsForDigidex(digidexId)
-                Log.d("DIGIMON_IDS", "Digimon IDs: $digimonIds")
+        val digimonIdsLiveData = repository.getDigimonIdsForDigidex(digidexId)
+
+        digimonIdsLiveData.observeForever { digimonIds ->
+            viewModelScope.launch {
                 val digimons = repository.getDigimonsByIds(digimonIds)
-                Log.d("DIGIMONS", "Digimons: $digimons")
                 _digimons.postValue(digimons)
-            } catch (e: Exception) {
-                Log.e("LOAD_DIGIMONS_ERROR", "Error loading digimons", e)
-                _digimons.postValue(emptyList())
             }
         }
     }

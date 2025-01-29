@@ -2,6 +2,7 @@ package com.example.digidex.repositories
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import com.example.digidex.database.Dao.DigiDao
 import com.example.digidex.database.models.DigiDexModel
 import com.example.digidex.database.models.DigiModel
@@ -60,13 +61,11 @@ class DigiRepository(
         }
     }
 
-    suspend fun getDigimonIdsForDigidex(digidexId: Int): List<Int> {
-        return withContext(defaultDispatcher) {
-            val digidexWithDigimons = digiDao.getDigiDexWithDigimons(digidexId).value
-            val digimonIds = digidexWithDigimons?.digimons?.map { it.id } ?: emptyList()
-            Log.d("DIGIMON_IDS", "Digimon IDs for DigiDex $digidexId: $digimonIds")
-            digimonIds
-        }
+    fun getDigimonIdsForDigidex(digidexId: Int): LiveData<List<Int>> {
+        return digiDao.getDigiDexWithDigimons(digidexId)
+            .map { digiDexWithDigimons ->
+                digiDexWithDigimons.digimons.map { it.id }
+            }
     }
 
     suspend fun getDigimonsByIds(digimonIds: List<Int>): List<DigiModel> {

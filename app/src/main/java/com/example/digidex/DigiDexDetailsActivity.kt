@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.example.digidex.adapters.DigiDexDatabaseAdapter
 import com.example.digidex.adapters.DigimonAdapter
 import com.example.digidex.database.models.DigiModel
 import com.example.digidex.databinding.DialogDigimonDetailBinding
@@ -22,8 +23,8 @@ class DigiDexDetailsActivity : AppCompatActivity() {
     private val viewModel: DigiDexDetailsViewModel by lazy {
         ViewModelProvider(this)[DigiDexDetailsViewModel::class.java]
     }
-    private val adapter: DigimonAdapter by lazy {
-        DigimonAdapter(
+    private val adapter: DigiDexDatabaseAdapter by lazy {
+        DigiDexDatabaseAdapter(
             onClick = { digimon -> showDigimonDetailsDialog(digimon) },
         )
     }
@@ -50,9 +51,13 @@ class DigiDexDetailsActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        binding.digimonRecyclerView.layoutManager = GridLayoutManager(this, 2)
-        binding.digimonRecyclerView.adapter = adapter
+        binding.digimonRecyclerView.apply {
+        layoutManager = GridLayoutManager(this@DigiDexDetailsActivity,2)
+        adapter = this@DigiDexDetailsActivity.adapter
+        }
     }
+
+
 
     private fun showDigimonDetailsDialog(digimon: DigiModel) {
         val dialogBinding = DialogDigimonDetailBinding.inflate(layoutInflater)
