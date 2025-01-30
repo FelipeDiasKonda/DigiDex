@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">DigiDex</string>
+    <string name="header">DigiDex</string>
+    <string name="add_digidex">criar uma nova coleção\n</string>
+    <string name="empty">Nenhuma coleção de Digimon</string>
+    <string name="collection_name">Nome</string>
+    <string name="DIgidexName">Nome</string>
+    <string name="DigidexDesc">descrição</string>
+    <string name="new_digidex">Novo DigiDex</string>
+    <string name="title_hint">Título</string>
+    <string name="desc_hint">Descrição</string>
+    <string name="add_digi_dex">Adicionar Digi-Dex</string>
+    <string name="digimon_image">imagem</string>
+    <string name="conclude_btn">Concluir</string>
+    <string name="add_digimon_btn">Adicionar Digimon ao Digidex</string>
+    <string-array name="level_filter">
+        <item>Campos</item>
+        <item>Baby I</item>
+        <item>Baby II</item>
+        <item>Child</item>
+        <item>Adult</item>
+        <item>Perfect</item>
+    </string-array>
+    <string-array name="attribute_filter">
+        <item>Atributos</item>
+        <item>Data</item>
+        <item>Free</item>
+        <item>Virus</item>
+        <item>Vaccine</item>
+        <item>Unknown</item>
+    </string-array>
+    <string name="digimon_details">Nível: %1$s\nAtributo: %2$s\nCampos: %3s\nTipo: %4$s\nDescrição: %5$s</string>
+</resources>
