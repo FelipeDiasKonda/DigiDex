@@ -165,7 +165,7 @@ class SelectDigimonsActivity : AppCompatActivity() {
             .create()
 
         dialogBinding.addDigimonButton.setOnClickListener {
-            viewModel.addDigimonstoDigidex(digidexId, listOf(digimon.id))
+            viewModel.addOneDigimontoDigidex(digidexId, listOf(digimon.id))
             dialog.dismiss()
         }
 
