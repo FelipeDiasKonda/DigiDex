@@ -2,6 +2,7 @@ package com.example.digidex
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -62,7 +63,16 @@ class DigiDexDetailsActivity : AppCompatActivity() {
         val dialogBinding = DialogDigimonDetailBinding.inflate(layoutInflater)
 
         dialogBinding.digimonNameTextView.text = digimon.name
-        dialogBinding.digimonDetailsTextView.text = getString(R.string.digimon_details, digimon.level, digimon.attribute, digimon.type, digimon.description)
+        dialogBinding.digimonDetailsTextView.text = getString(
+            R.string.digimon_details,
+            digimon.level,
+            digimon.attribute,
+            digimon.fields,
+            digimon.type,
+            digimon.description
+        )
+
+        dialogBinding.addDigimonButton.visibility = View.GONE
 
         Glide.with(this)
             .load(digimon.image)
@@ -70,10 +80,8 @@ class DigiDexDetailsActivity : AppCompatActivity() {
 
         AlertDialog.Builder(this)
             .setView(dialogBinding.root)
-            .setPositiveButton("OK") { dialog, _ ->
-                dialog.dismiss()
-            }
             .create()
             .show()
+
     }
 }

@@ -13,6 +13,8 @@ import com.example.digidex.database.models.DigiModel
 import com.example.digidex.repositories.DigiRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -24,6 +26,8 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
     val digimons: LiveData<List<DigiModel>> get() = _digimons
     private val _digimonDetails = MutableLiveData<DigiModel?>()
     val digimonDetails: LiveData<DigiModel?> get() = _digimonDetails
+    private val _digimonsAdded = MutableLiveData<Int>()
+    val digimonsAdded: LiveData<Int> get() = _digimonsAdded
 
     init {
         val dao = DigiDexDatabase(application).digiDexDao()
@@ -33,12 +37,17 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
     fun fetchDigimons(level: String? = null, attribute: String? = null) {
         viewModelScope.launch {
             try {
-                val response =
-                    RetrofitInstance.api.getDigimons(level = level, attribute = attribute)
+                val response = RetrofitInstance.api.getDigimons(level = level, attribute = attribute)
                 if (response.isSuccessful) {
-                    _digimons.value = response.body()?.content
-                    Log.d("Digimons", response.body()?.content.toString())
-                    Log.d("API_SUCCESS", "Digimons fetched successfully")
+                    val digimonsList = response.body()?.content ?: emptyList()
+                    repository.getAllDigimons().observeForever { existingDigimons ->
+                        val filteredDigimons = digimonsList.filter { digimon ->
+                            existingDigimons.none { it.id == digimon.id }
+                        }
+                        _digimons.value = filteredDigimons
+                        Log.d("Digimons", filteredDigimons.toString())
+                        Log.d("API_SUCCESS", "Digimons fetched successfully")
+                    }
                 } else {
                     Log.e("API_ERROR", "Response not successful: ${response.errorBody()?.string()}")
                 }
@@ -47,7 +56,6 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
             }
         }
     }
-
     fun addDigimonstoDigidex(digidexId: Int, digimons: List<Int>) {
         viewModelScope.launch {
             try {
@@ -66,6 +74,7 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
     }
 
 
+
     private fun saveDigimon(digimon: Int, digidexId: Int) {
         viewModelScope.launch {
             val detailedDigimon = fetchDigimonDetails(digimon)
@@ -77,9 +86,9 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
                     description = detailedDigimon.description,
                     level = detailedDigimon.level,
                     attribute = detailedDigimon.attribute,
+                    fields = detailedDigimon.fields,
                     type = detailedDigimon.type
                 )
-                Log.d("DIGIMON_SAVE", "Saving digimon: $digimonModel")
                 repository.insertDigimon(digimonModel)
                 if (repository.digimonExists(digimonModel.id)) {
                     repository.addDigimonsToDigidex(digidexId, listOf(digimonModel.id))
@@ -110,7 +119,6 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
             val response = RetrofitInstance.api.getDigimonDetails(id)
             if (response.isSuccessful) {
                 val digimonDetail = response.body()
-                Log.d("API_RESPONSE", "Fetched details for Digimon ID: $id - $digimonDetail")
 
                 digimonDetail?.let {
                     DigiModel(
@@ -121,6 +129,7 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
                         level = it.levels.firstOrNull()?.level ?: "Unknown",
                         attribute = it.attributes.firstOrNull()?.attribute ?: "Unknown",
                         type = it.types.firstOrNull()?.type ?: "Unknown",
+                        fields = it.fields.firstOrNull()?.field ?: "Unknown",
                         image = it.images.firstOrNull()?.href ?: ""
                     )
                 }

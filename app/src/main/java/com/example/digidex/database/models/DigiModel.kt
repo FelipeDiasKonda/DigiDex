@@ -12,5 +12,6 @@ data class DigiModel (
     var level: String? = "Unknown",
     var attribute: String? = "Unknown",
     var type: String? = "Unknown",
+    var fields: String? = "Unknown",
     var image:String
 )

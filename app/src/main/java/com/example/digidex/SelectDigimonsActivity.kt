@@ -30,11 +30,13 @@ class SelectDigimonsActivity : AppCompatActivity() {
         )
     }
 
+
     private var digidexId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
 
         viewModel.getLastDigiDexId().observe(this) { id ->
             digidexId = id ?: -1
@@ -52,6 +54,7 @@ class SelectDigimonsActivity : AppCompatActivity() {
                 Toast.makeText(this, "Failed to fetch Digimon details", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     private fun setupUI() {
@@ -68,8 +71,6 @@ class SelectDigimonsActivity : AppCompatActivity() {
         binding.confirmButton.setOnClickListener {
             val selectedDigimonsIds = adapter.getSelectedDigimons()
             viewModel.addDigimonstoDigidex(digidexId, selectedDigimonsIds)
-            Toast.makeText(this, "Digidex Created", Toast.LENGTH_SHORT).show()
-            finish()
         }
     }
 
@@ -91,46 +92,77 @@ class SelectDigimonsActivity : AppCompatActivity() {
         binding.attributeFilter.adapter = attributeAdapter
 
         binding.levelFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedLevel = if (position == 0) null else parent.getItemAtPosition(position) as String
-                val selectedAttribute = if (binding.attributeFilter.selectedItemPosition == 0) null else binding.attributeFilter.selectedItem as String?
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selectedLevel =
+                    if (position == 0) null else parent.getItemAtPosition(position) as String
+                val selectedAttribute =
+                    if (binding.attributeFilter.selectedItemPosition == 0) null else binding.attributeFilter.selectedItem as String?
                 viewModel.fetchDigimons(level = selectedLevel, attribute = selectedAttribute)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                viewModel.fetchDigimons(level = null, attribute = if (binding.attributeFilter.selectedItemPosition == 0) null else binding.attributeFilter.selectedItem as String?)
+                viewModel.fetchDigimons(
+                    level = null,
+                    attribute = if (binding.attributeFilter.selectedItemPosition == 0) null else binding.attributeFilter.selectedItem as String?
+                )
             }
         }
 
-        binding.attributeFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedAttribute = if (position == 0) null else parent.getItemAtPosition(position) as String
-                val selectedLevel = if (binding.levelFilter.selectedItemPosition == 0) null else binding.levelFilter.selectedItem as String?
-                viewModel.fetchDigimons(level = selectedLevel, attribute = selectedAttribute)
-            }
+        binding.attributeFilter.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val selectedAttribute =
+                        if (position == 0) null else parent.getItemAtPosition(position) as String
+                    val selectedLevel =
+                        if (binding.levelFilter.selectedItemPosition == 0) null else binding.levelFilter.selectedItem as String?
+                    viewModel.fetchDigimons(level = selectedLevel, attribute = selectedAttribute)
+                }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                viewModel.fetchDigimons(level = if (binding.levelFilter.selectedItemPosition == 0) null else binding.levelFilter.selectedItem as String?, attribute = null)
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    viewModel.fetchDigimons(
+                        level = if (binding.levelFilter.selectedItemPosition == 0) null else binding.levelFilter.selectedItem as String?,
+                        attribute = null
+                    )
+                }
             }
-        }
     }
 
     private fun showDigimonDetailsDialog(digimon: DigiModel) {
         val dialogBinding = DialogDigimonDetailBinding.inflate(layoutInflater)
 
         dialogBinding.digimonNameTextView.text = digimon.name
-        dialogBinding.digimonDetailsTextView.text = getString(R.string.digimon_details, digimon.level, digimon.attribute, digimon.type, digimon.description)
+        dialogBinding.digimonDetailsTextView.text = getString(
+            R.string.digimon_details,
+            digimon.level,
+            digimon.attribute,
+            digimon.fields,
+            digimon.type,
+            digimon.description
+        )
 
         Glide.with(this)
             .load(digimon.image)
             .into(dialogBinding.digimonImageView)
 
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setView(dialogBinding.root)
-            .setPositiveButton("OK") { dialog, _ ->
-                dialog.dismiss()
-            }
             .create()
-            .show()
+
+        dialogBinding.addDigimonButton.setOnClickListener {
+            viewModel.addDigimonstoDigidex(digidexId, listOf(digimon.id))
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

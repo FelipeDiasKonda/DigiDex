@@ -13,8 +13,8 @@ import com.example.digidex.database.models.DigiModel
 import com.example.digidex.databinding.DigimonItemBinding
 
 
-class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<DigiModel, DigimonAdapter.DigimonViewHolder>(DiffCallback()) {
-
+class DigimonAdapter(private val onClick: (DigiModel) -> Unit) :
+    ListAdapter<DigiModel, DigimonAdapter.DigimonViewHolder>(DiffCallback()) {
 
     private val selectedDigimons = mutableSetOf<Int>()
 
@@ -28,13 +28,14 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<Dig
         holder.bind(digimon, selectedDigimons.contains(digimon.id))
     }
 
-    inner class DigimonViewHolder(private val binding: DigimonItemBinding, private val onClick: (DigiModel) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+    inner class DigimonViewHolder(
+        private val binding: DigimonItemBinding,
+        private val onClick: (DigiModel) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
         private var currentDigimon: DigiModel? = null
         private var isClickable = true
 
-
         init {
-
             itemView.setOnClickListener {
                 if (isClickable) {
                     isClickable = false
@@ -44,7 +45,6 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) : ListAdapter<Dig
                     }, 500)
                 }
             }
-
 
             itemView.setOnLongClickListener {
                 currentDigimon?.let {

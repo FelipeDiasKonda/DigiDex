@@ -15,12 +15,11 @@ import com.example.digidex.adapters.DigiDexAdapter
 import com.example.digidex.database.models.DigiDexModel
 import com.example.digidex.databinding.ActivityMainBinding
 import com.example.digidex.viewmodels.DigiDexViewModel
-import com.example.digidex.viewmodels.DigiDexViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
     private val digidexViewModel: DigiDexViewModel by lazy {
-        ViewModelProvider(this, DigiDexViewModelFactory(application))[DigiDexViewModel::class.java]
+        ViewModelProvider(this)[DigiDexViewModel::class.java]
     }
 
     private val binding: ActivityMainBinding by lazy {

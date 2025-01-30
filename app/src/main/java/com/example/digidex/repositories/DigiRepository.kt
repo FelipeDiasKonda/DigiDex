@@ -9,6 +9,7 @@ import com.example.digidex.database.models.DigiModel
 import com.example.digidex.database.models.DigidexDigimonModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.invoke
 import kotlinx.coroutines.withContext
 
 class DigiRepository(
@@ -73,6 +74,11 @@ class DigiRepository(
             val digimons = digimonIds.mapNotNull { digiDao.getDigimonById(it) }
             Log.d("DIGIMONS_LOADED", "Digimons loaded: $digimons")
             digimons
+        }
+    }
+    suspend fun getAllDigimons(): LiveData<List<DigiModel>> {
+        return withContext(defaultDispatcher) {
+            digiDao.getAllDigimons()
         }
     }
 }
