@@ -29,5 +29,5 @@
         <item>Vaccine</item>
         <item>Unknown</item>
     </string-array>
-    <string name="digimon_details">Level: %1$s\nAttribute: %2$s\nFields: %3s\nType: %4$s\nDescription: %5s</string>
+    <string name="digimon_details">Level: %1$s\nAttribute: %2$s\nFields: %3$s\nType: %4$s\nDescription: %5$s</string>
 </resources>
