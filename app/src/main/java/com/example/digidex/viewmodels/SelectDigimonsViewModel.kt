@@ -66,7 +66,7 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
                     val saveJobs = digimons.map { digimonId ->
                         async { saveDigimon(digimonId, digidexId) }
                     }
-                    saveJobs.awaitAll() // Espera todas as operações de salvamento concluírem
+                    saveJobs.awaitAll()
 
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
