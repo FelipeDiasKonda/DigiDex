@@ -2,6 +2,7 @@ package com.example.digidex.viewmodels
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,8 +27,8 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
     val digimons: LiveData<List<DigiModel>> get() = _digimons
     private val _digimonDetails = MutableLiveData<DigiModel?>()
     val digimonDetails: LiveData<DigiModel?> get() = _digimonDetails
-    private val _digimonsAdded = MutableLiveData<Int>()
-    val digimonsAdded: LiveData<Int> get() = _digimonsAdded
+    private val _finishActivity = MutableLiveData<Boolean>()
+    val finishActivity: LiveData<Boolean> get() = _finishActivity
 
     init {
         val dao = DigiDexDatabase(application).digiDexDao()
@@ -37,7 +38,8 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
     fun fetchDigimons(level: String? = null, attribute: String? = null) {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.getDigimons(level = level, attribute = attribute)
+                val response =
+                    RetrofitInstance.api.getDigimons(level = level, attribute = attribute)
                 if (response.isSuccessful) {
                     val digimonsList = response.body()?.content ?: emptyList()
                     repository.getAllDigimons().observeForever { existingDigimons ->
@@ -56,14 +58,24 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
             }
         }
     }
+
     fun addDigimonstoDigidex(digidexId: Int, digimons: List<Int>) {
         viewModelScope.launch {
             try {
                 if (repository.digidexExists(digidexId)) {
-                    digimons.forEach { digimonId ->
-                        saveDigimon(digimonId, digidexId)
+                    val saveJobs = digimons.map { digimonId ->
+                        async { saveDigimon(digimonId, digidexId) }
                     }
-                    Log.d("DIGIMONS", "Digimons: $digimons")
+                    saveJobs.awaitAll() // Espera todas as operações de salvamento concluírem
+
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            getApplication<Application>().applicationContext,
+                            "Digimons added to digidex",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        _finishActivity.value = true
+                    }
                 } else {
                     Log.e("DIGIDEX_ERROR", "Invalid DigiDex ID: $digidexId")
                 }
@@ -74,30 +86,26 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
     }
 
 
-
-    private fun saveDigimon(digimon: Int, digidexId: Int) {
-        viewModelScope.launch {
-            val detailedDigimon = fetchDigimonDetails(digimon)
-            Log.d("DETAILED_DIGIMON", "detaild $detailedDigimon")
-            if (detailedDigimon != null) {
-                val imagePath = saveImageLocally(detailedDigimon.image)
-                val digimonModel = detailedDigimon.copy(
-                    image = imagePath,
-                    description = detailedDigimon.description,
-                    level = detailedDigimon.level,
-                    attribute = detailedDigimon.attribute,
-                    fields = detailedDigimon.fields,
-                    type = detailedDigimon.type
-                )
-                repository.insertDigimon(digimonModel)
-                if (repository.digimonExists(digimonModel.id)) {
-                    repository.addDigimonsToDigidex(digidexId, listOf(digimonModel.id))
-                } else {
-                    Log.e("DIGIMON_SAVE", "Invalid Digimon ID: ${digimonModel.id}")
-                }
+    private suspend fun saveDigimon(digimon: Int, digidexId: Int) {
+        val detailedDigimon = fetchDigimonDetails(digimon)
+        if (detailedDigimon != null) {
+            val imagePath = saveImageLocally(detailedDigimon.image)
+            val digimonModel = detailedDigimon.copy(
+                image = imagePath,
+                description = detailedDigimon.description,
+                level = detailedDigimon.level,
+                attribute = detailedDigimon.attribute,
+                fields = detailedDigimon.fields,
+                type = detailedDigimon.type
+            )
+            repository.insertDigimon(digimonModel)
+            if (repository.digimonExists(digimonModel.id)) {
+                repository.addDigimonsToDigidex(digidexId, listOf(digimonModel.id))
             } else {
-                Log.e("DIGIMON_SAVE", "Failed to fetch details for Digimon ID: $digimon")
+                Log.e("DIGIMON_SAVE", "Invalid Digimon ID: ${digimonModel.id}")
             }
+        } else {
+            Log.e("DIGIMON_SAVE", "Failed to fetch details for Digimon ID: $digimon")
         }
     }
 
@@ -136,7 +144,9 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
             } else {
                 Log.e(
                     "API_ERROR",
-                    "Failed to fetch details for Digimon ID: $id - ${response.errorBody()?.string()}"
+                    "Failed to fetch details for Digimon ID: $id - ${
+                        response.errorBody()?.string()
+                    }"
                 )
                 null
             }
@@ -154,6 +164,7 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
         }
         return lastDigiDexId
     }
+
     fun fetchDigimonDetailsLiveData(id: Int) {
         viewModelScope.launch {
             val digimon = fetchDigimonDetails(id)
