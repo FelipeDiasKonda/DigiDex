@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
@@ -54,6 +55,11 @@ class SelectDigimonsActivity : AppCompatActivity() {
                 Toast.makeText(this, "Failed to fetch Digimon details", Toast.LENGTH_SHORT).show()
             }
         }
+        viewModel.finishActivity.observe(this, Observer { shouldFinish ->
+            if (shouldFinish == true) {
+                finish()
+            }
+        })
 
     }
 

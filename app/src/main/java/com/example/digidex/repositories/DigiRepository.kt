@@ -9,7 +9,6 @@ import com.example.digidex.database.models.DigiModel
 import com.example.digidex.database.models.DigidexDigimonModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.invoke
 import kotlinx.coroutines.withContext
 
 class DigiRepository(
@@ -17,7 +16,6 @@ class DigiRepository(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
     val allDigiDexes: LiveData<List<DigiDexModel>> = digiDao.getAllDigiDexes()
-    val allDigimons: LiveData<List<DigiModel>> = digiDao.getAllDigimons()
 
     suspend fun insertDigiDex(digiDexModel: DigiDexModel) {
         withContext(defaultDispatcher) {
