@@ -84,6 +84,22 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
             }
         }
     }
+    fun addOneDigimontoDigidex(digidexId: Int, digimons: List<Int>) {
+        viewModelScope.launch {
+            try {
+                if (repository.digidexExists(digidexId)) {
+                    val saveJobs = digimons.map { digimonId ->
+                        async { saveDigimon(digimonId, digidexId) }
+                    }
+                    saveJobs.awaitAll()
+                } else {
+                    Log.e("DIGIDEX_ERROR", "Invalid DigiDex ID: $digidexId")
+                }
+            } catch (e: Exception) {
+                Log.e("DIGIDEX_ERROR", "Response not successful:", e)
+            }
+        }
+    }
 
 
     private suspend fun saveDigimon(digimon: Int, digidexId: Int) {
