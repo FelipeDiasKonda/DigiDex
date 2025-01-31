@@ -11,30 +11,30 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.digidex.adapters.DigiDexAdapter
-import com.example.digidex.database.models.DigiDexModel
+import com.example.digidex.adapters.DigidexAdapter
+import com.example.digidex.database.models.DigidexModel
 import com.example.digidex.databinding.ActivityMainBinding
-import com.example.digidex.viewmodels.DigiDexViewModel
+import com.example.digidex.viewmodels.DigidexViewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private val digidexViewModel: DigiDexViewModel by lazy {
-        ViewModelProvider(this)[DigiDexViewModel::class.java]
+    private val digidexViewModel: DigidexViewModel by lazy {
+        ViewModelProvider(this)[DigidexViewModel::class.java]
     }
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-    private val onItemLongClickListener: (DigiDexModel) -> Unit = { _ ->
+    private val onItemLongClickListener: (DigidexModel) -> Unit = { _ ->
 
     }
-    private val onItemClickListener: (DigiDexModel) -> Unit = { digidex ->
-        val intent = Intent(this, DigiDexDetailsActivity::class.java)
+    private val onItemClickListener: (DigidexModel) -> Unit = { digidex ->
+        val intent = Intent(this, DigidexDetailsActivity::class.java)
         intent.putExtra("DIGIDEX_ID", digidex.id)
         startActivity(intent)
     }
-    private val adapter: DigiDexAdapter by lazy {
-        DigiDexAdapter(onItemClickListener, onItemLongClickListener)
+    private val adapter: DigidexAdapter by lazy {
+        DigidexAdapter(onItemClickListener, onItemLongClickListener)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.fab.setOnClickListener {
             binding.fab.isEnabled = false
-            val dialog = NewDigiDexFragment()
+            val dialog = NewDigidexFragment()
             dialog.show(supportFragmentManager, "AddTask")
             Handler(Looper.getMainLooper()).postDelayed({
                 binding.fab.isEnabled = true

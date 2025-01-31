@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "digi_table")
-data class DigiModel (
+data class DigimonModel (
     @PrimaryKey  val id: Int,
     val name: String,
     var description: String? = "No description available",

@@ -11,7 +11,7 @@ object RetrofitInstance {
             .build()
     }
 
-    val api: DigimonApiService by lazy {
-        retrofit.create(DigimonApiService::class.java)
+    val api: DigimonApi by lazy {
+        retrofit.create(DigimonApi::class.java)
     }
 }

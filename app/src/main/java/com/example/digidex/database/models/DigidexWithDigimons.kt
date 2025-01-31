@@ -4,8 +4,8 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
-data class DigiDexWithDigimons(
-    @Embedded val digidex: DigiDexModel,
+data class DigidexWithDigimons(
+    @Embedded val digidex: DigidexModel,
     @Relation(
         parentColumn = "id",
         entityColumn = "id",
@@ -15,5 +15,5 @@ data class DigiDexWithDigimons(
             entityColumn = "digimonId"
         )
     )
-    val digimons: List<DigiModel>
+    val digimons: List<DigimonModel>
 )

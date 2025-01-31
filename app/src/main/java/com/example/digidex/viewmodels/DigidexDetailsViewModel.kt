@@ -5,20 +5,20 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.digidex.database.db.DigiDexDatabase
-import com.example.digidex.database.models.DigiModel
+import com.example.digidex.database.db.DigiDatabase
+import com.example.digidex.database.models.DigimonModel
 import com.example.digidex.repositories.DigiRepository
 import kotlinx.coroutines.launch
 
-class DigiDexDetailsViewModel(application: Application) : AndroidViewModel(application) {
+class DigidexDetailsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: DigiRepository
-    private val _digimons = MutableLiveData<List<DigiModel>>()
-    val digimons: LiveData<List<DigiModel>> get() = _digimons
+    private val _digimons = MutableLiveData<List<DigimonModel>>()
+    val digimons: LiveData<List<DigimonModel>> get() = _digimons
 
     init {
-        val dao = DigiDexDatabase(application).digiDexDao()
-        repository = DigiRepository(dao)
+        val database = DigiDatabase(application)
+        repository = DigiRepository(database.digidexDao(), database.digimonDao(), database.digidexDigimonDao())
     }
 
     fun loadDigimons(digidexId: Int) {

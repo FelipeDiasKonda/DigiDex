@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SelectDigimonsActivity" />
-        <activity android:name=".DigiDexDetailsActivity" />
+        <activity android:name=".DigidexDetailsActivity" />
     </application>
 
 </manifest>

@@ -1,12 +1,12 @@
 package com.example.digidex.apiconfig
 
-import com.example.digidex.database.models.DigiModel
+import com.example.digidex.database.models.DigimonModel
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface DigimonApiService {
+interface DigimonApi {
 
     @GET("digimon")
     suspend fun getDigimons(
@@ -20,7 +20,7 @@ interface DigimonApiService {
     ): Response<DigimonsResponse>
 
     data class DigimonsResponse(
-        val content: List<DigiModel>
+        val content: List<DigimonModel>
     )
 
     @GET("digimon/{id}")

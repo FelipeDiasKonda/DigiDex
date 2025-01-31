@@ -9,21 +9,21 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.example.digidex.database.models.DigiDexModel
+import com.example.digidex.database.models.DigidexModel
 import com.example.digidex.databinding.NewDexFragmentBinding
-import com.example.digidex.viewmodels.AddDigiDexViewModel
+import com.example.digidex.viewmodels.AddDigidexViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class NewDigiDexFragment : BottomSheetDialogFragment() {
+class NewDigidexFragment : BottomSheetDialogFragment() {
 
     private val binding: NewDexFragmentBinding by lazy {
         NewDexFragmentBinding.inflate(layoutInflater)
     }
 
-    private val addDigiDexViewModel: AddDigiDexViewModel by lazy {
-        ViewModelProvider(this)[AddDigiDexViewModel::class.java]
+    private val addDigiDexViewModel: AddDigidexViewModel by lazy {
+        ViewModelProvider(this)[AddDigidexViewModel::class.java]
     }
 
 
@@ -65,7 +65,7 @@ class NewDigiDexFragment : BottomSheetDialogFragment() {
             val title = binding.AddTitleEditText.text.toString()
             val description = binding.AddDescEditText.text.toString()
             if (title.isNotBlank()) {
-                val newDigiDex = DigiDexModel(id, title, description)
+                val newDigiDex = DigidexModel(id, title, description)
                 addDigiDexViewModel.addDigiDex(newDigiDex)
                 val intent = Intent(requireContext(), SelectDigimonsActivity::class.java)
                 startActivity(intent)
