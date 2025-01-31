@@ -81,16 +81,16 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
                             getApplication<Application>().applicationContext,
-                            "Digimons added to digidex",
+                            "Digimons adicionados ao DigiDex",
                             Toast.LENGTH_SHORT
                         ).show()
                         _finishActivity.value = true
                     }
                 } else {
-                    Log.e("DIGIDEX_ERROR", "Invalid DigiDex ID: $digidexId")
+                    Log.e("DIGIDEX_ERROR", "ID do DigiDex inválido: $digidexId")
                 }
             } catch (e: Exception) {
-                Log.e("DIGIDEX_ERROR", "Response not successful:", e)
+                Log.e("DIGIDEX_ERROR", "Erro ao adicionar Digimons ao DigiDex:", e)
             }
         }
     }
