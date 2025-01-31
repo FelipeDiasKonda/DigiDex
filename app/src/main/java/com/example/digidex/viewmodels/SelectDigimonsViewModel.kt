@@ -67,7 +67,6 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
                         async { saveDigimon(digimonId, digidexId) }
                     }
                     saveJobs.awaitAll()
-
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
                             getApplication<Application>().applicationContext,
@@ -124,7 +123,6 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
             Log.e("DIGIMON_SAVE", "Failed to fetch details for Digimon ID: $digimon")
         }
     }
-
 
     private suspend fun saveImageLocally(imageUrl: String): String {
         return withContext(defaultDispatcher) {
