@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.digidex.database.models.DigiModel
+import com.example.digidex.database.models.DigimonModel
 import com.example.digidex.databinding.DigimonItemBinding
 
 
-class DigimonAdapter(private val onClick: (DigiModel) -> Unit) :
-    ListAdapter<DigiModel, DigimonAdapter.DigimonViewHolder>(DiffCallback()) {
+class DigimonAdapter(private val onClick: (DigimonModel) -> Unit) :
+    ListAdapter<DigimonModel, DigimonAdapter.DigimonViewHolder>(DiffCallback()) {
 
     private val selectedDigimons = mutableSetOf<Int>()
 
@@ -30,9 +30,9 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) :
 
     inner class DigimonViewHolder(
         private val binding: DigimonItemBinding,
-        private val onClick: (DigiModel) -> Unit
+        private val onClick: (DigimonModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        private var currentDigimon: DigiModel? = null
+        private var currentDigimon: DigimonModel? = null
         private var isClickable = true
 
         init {
@@ -59,7 +59,7 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) :
             }
         }
 
-        fun bind(digimon: DigiModel, isSelected: Boolean) {
+        fun bind(digimon: DigimonModel, isSelected: Boolean) {
             currentDigimon = digimon
             binding.digimonNameTextView.text = digimon.name
             Glide.with(binding.digimonImageView.context)
@@ -75,12 +75,12 @@ class DigimonAdapter(private val onClick: (DigiModel) -> Unit) :
         return selectedDigimons.toList()
     }
 
-    class DiffCallback : DiffUtil.ItemCallback<DigiModel>() {
-        override fun areItemsTheSame(oldItem: DigiModel, newItem: DigiModel): Boolean {
+    class DiffCallback : DiffUtil.ItemCallback<DigimonModel>() {
+        override fun areItemsTheSame(oldItem: DigimonModel, newItem: DigimonModel): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: DigiModel, newItem: DigiModel): Boolean {
+        override fun areContentsTheSame(oldItem: DigimonModel, newItem: DigimonModel): Boolean {
             return oldItem == newItem
         }
     }

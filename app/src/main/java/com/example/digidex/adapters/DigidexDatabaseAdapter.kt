@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.digidex.database.models.DigiModel
+import com.example.digidex.database.models.DigimonModel
 import com.example.digidex.databinding.DigimonItemBinding
 
-class DigiDexDatabaseAdapter(
-    private val onClick: (DigiModel) -> Unit
-) : ListAdapter<DigiModel, DigiDexDatabaseAdapter.DigimonViewHolder>(DiffCallback()) {
+class DigidexDatabaseAdapter(
+    private val onClick: (DigimonModel) -> Unit
+) : ListAdapter<DigimonModel, DigidexDatabaseAdapter.DigimonViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DigimonViewHolder {
         val binding = DigimonItemBinding.inflate(
@@ -31,7 +31,7 @@ class DigiDexDatabaseAdapter(
         private val binding: DigimonItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(digimon: DigiModel) {
+        fun bind(digimon: DigimonModel) {
             with(binding) {
                 digimonNameTextView.text = digimon.name
                 Glide.with(root.context)
@@ -42,12 +42,12 @@ class DigiDexDatabaseAdapter(
         }
     }
 
-    class DiffCallback : DiffUtil.ItemCallback<DigiModel>() {
-        override fun areItemsTheSame(oldItem: DigiModel, newItem: DigiModel): Boolean {
+    class DiffCallback : DiffUtil.ItemCallback<DigimonModel>() {
+        override fun areItemsTheSame(oldItem: DigimonModel, newItem: DigimonModel): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: DigiModel, newItem: DigiModel): Boolean {
+        override fun areContentsTheSame(oldItem: DigimonModel, newItem: DigimonModel): Boolean {
             return oldItem == newItem
         }
     }

@@ -9,8 +9,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.example.digidex.apiconfig.RetrofitInstance
-import com.example.digidex.database.db.DigiDexDatabase
-import com.example.digidex.database.models.DigiModel
+import com.example.digidex.database.db.DigiDatabase
+import com.example.digidex.database.models.DigimonModel
 import com.example.digidex.repositories.DigiRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -22,24 +22,35 @@ import kotlinx.coroutines.withContext
 class SelectDigimonsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: DigiRepository
-    private val _digimons = MutableLiveData<List<DigiModel>>()
+    private val _digimons = MutableLiveData<List<DigimonModel>>()
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
-    val digimons: LiveData<List<DigiModel>> get() = _digimons
-    private val _digimonDetails = MutableLiveData<DigiModel?>()
-    val digimonDetails: LiveData<DigiModel?> get() = _digimonDetails
+    val digimons: LiveData<List<DigimonModel>> get() = _digimons
+    private val _digimonDetails = MutableLiveData<DigimonModel?>()
+    val digimonDetails: LiveData<DigimonModel?> get() = _digimonDetails
     private val _finishActivity = MutableLiveData<Boolean>()
     val finishActivity: LiveData<Boolean> get() = _finishActivity
+    private val _selectedFilter = MutableLiveData<Pair<String?, String?>>()
 
     init {
-        val dao = DigiDexDatabase(application).digiDexDao()
-        repository = DigiRepository(dao)
+        val database = DigiDatabase(application)
+        repository = DigiRepository(database.digidexDao(), database.digimonDao(), database.digidexDigimonDao())
+    }
+
+    fun setFilter(level: String?, attribute: String?) {
+        _selectedFilter.value = Pair(level, attribute)
+        fetchDigimons(level, attribute)
     }
 
     fun fetchDigimons(level: String? = null, attribute: String? = null) {
+        val filterLevel = level ?: _selectedFilter.value?.first
+        val filterAttribute = attribute ?: _selectedFilter.value?.second
+
         viewModelScope.launch {
             try {
-                val response =
-                    RetrofitInstance.api.getDigimons(level = level, attribute = attribute)
+                val response = RetrofitInstance.api.getDigimons(
+                    level = filterLevel,
+                    attribute = filterAttribute
+                )
                 if (response.isSuccessful) {
                     val digimonsList = response.body()?.content ?: emptyList()
                     repository.getAllDigimons().observeForever { existingDigimons ->
@@ -83,6 +94,7 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
             }
         }
     }
+
     fun addOneDigimontoDigidex(digidexId: Int, digimons: List<Int>) {
         viewModelScope.launch {
             try {
@@ -91,6 +103,8 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
                         async { saveDigimon(digimonId, digidexId) }
                     }
                     saveJobs.awaitAll()
+                    val filter = _selectedFilter.value
+                    fetchDigimons(filter?.first, filter?.second)
                 } else {
                     Log.e("DIGIDEX_ERROR", "Invalid DigiDex ID: $digidexId")
                 }
@@ -136,14 +150,14 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    private suspend fun fetchDigimonDetails(id: Int): DigiModel? {
+    private suspend fun fetchDigimonDetails(id: Int): DigimonModel? {
         return try {
             val response = RetrofitInstance.api.getDigimonDetails(id)
             if (response.isSuccessful) {
                 val digimonDetail = response.body()
 
                 digimonDetail?.let {
-                    DigiModel(
+                    DigimonModel(
                         id = it.id,
                         name = it.name,
                         description = it.descriptions.firstOrNull { desc -> desc.language == "en_us" }?.description

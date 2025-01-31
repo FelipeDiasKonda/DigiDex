@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.digidex.adapters.DigimonAdapter
-import com.example.digidex.database.models.DigiModel
+import com.example.digidex.database.models.DigimonModel
 import com.example.digidex.databinding.DialogDigimonDetailBinding
 import com.example.digidex.databinding.DigimonsListBinding
 import com.example.digidex.viewmodels.SelectDigimonsViewModel
@@ -108,13 +108,13 @@ class SelectDigimonsActivity : AppCompatActivity() {
                     if (position == 0) null else parent.getItemAtPosition(position) as String
                 val selectedAttribute =
                     if (binding.attributeFilter.selectedItemPosition == 0) null else binding.attributeFilter.selectedItem as String?
-                viewModel.fetchDigimons(level = selectedLevel, attribute = selectedAttribute)
+                viewModel.setFilter(selectedLevel, selectedAttribute)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                viewModel.fetchDigimons(
-                    level = null,
-                    attribute = if (binding.attributeFilter.selectedItemPosition == 0) null else binding.attributeFilter.selectedItem as String?
+                viewModel.setFilter(
+                    null,
+                    if (binding.attributeFilter.selectedItemPosition == 0) null else binding.attributeFilter.selectedItem as String?
                 )
             }
         }
@@ -131,19 +131,19 @@ class SelectDigimonsActivity : AppCompatActivity() {
                         if (position == 0) null else parent.getItemAtPosition(position) as String
                     val selectedLevel =
                         if (binding.levelFilter.selectedItemPosition == 0) null else binding.levelFilter.selectedItem as String?
-                    viewModel.fetchDigimons(level = selectedLevel, attribute = selectedAttribute)
+                    viewModel.setFilter(selectedLevel, selectedAttribute)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
-                    viewModel.fetchDigimons(
-                        level = if (binding.levelFilter.selectedItemPosition == 0) null else binding.levelFilter.selectedItem as String?,
-                        attribute = null
+                    viewModel.setFilter(
+                        if (binding.levelFilter.selectedItemPosition == 0) null else binding.levelFilter.selectedItem as String?,
+                        null
                     )
                 }
             }
     }
 
-    private fun showDigimonDetailsDialog(digimon: DigiModel) {
+    private fun showDigimonDetailsDialog(digimon: DigimonModel) {
         val dialogBinding = DialogDigimonDetailBinding.inflate(layoutInflater)
 
         dialogBinding.digimonNameTextView.text = digimon.name

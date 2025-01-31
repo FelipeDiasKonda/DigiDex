@@ -9,22 +9,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
-import com.example.digidex.adapters.DigiDexDatabaseAdapter
-import com.example.digidex.database.models.DigiModel
+import com.example.digidex.adapters.DigidexDatabaseAdapter
+import com.example.digidex.database.models.DigimonModel
 import com.example.digidex.databinding.DialogDigimonDetailBinding
 import com.example.digidex.databinding.DigimonsDigidexBinding
-import com.example.digidex.viewmodels.DigiDexDetailsViewModel
+import com.example.digidex.viewmodels.DigidexDetailsViewModel
 
-class DigiDexDetailsActivity : AppCompatActivity() {
+class DigidexDetailsActivity : AppCompatActivity() {
 
     private val binding: DigimonsDigidexBinding by lazy {
         DigimonsDigidexBinding.inflate(layoutInflater)
     }
-    private val viewModel: DigiDexDetailsViewModel by lazy {
-        ViewModelProvider(this)[DigiDexDetailsViewModel::class.java]
+    private val viewModel: DigidexDetailsViewModel by lazy {
+        ViewModelProvider(this)[DigidexDetailsViewModel::class.java]
     }
-    private val adapter: DigiDexDatabaseAdapter by lazy {
-        DigiDexDatabaseAdapter(
+    private val adapter: DigidexDatabaseAdapter by lazy {
+        DigidexDatabaseAdapter(
             onClick = { digimon -> showDigimonDetailsDialog(digimon) },
         )
     }
@@ -52,14 +52,14 @@ class DigiDexDetailsActivity : AppCompatActivity() {
 
     private fun setupUI() {
         binding.digimonRecyclerView.apply {
-        layoutManager = GridLayoutManager(this@DigiDexDetailsActivity,2)
-        adapter = this@DigiDexDetailsActivity.adapter
+        layoutManager = GridLayoutManager(this@DigidexDetailsActivity,2)
+        adapter = this@DigidexDetailsActivity.adapter
         }
     }
 
 
 
-    private fun showDigimonDetailsDialog(digimon: DigiModel) {
+    private fun showDigimonDetailsDialog(digimon: DigimonModel) {
         val dialogBinding = DialogDigimonDetailBinding.inflate(layoutInflater)
 
         dialogBinding.digimonNameTextView.text = digimon.name
