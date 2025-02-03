@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -32,9 +31,7 @@ class SelectDigimonsActivity : AppCompatActivity() {
         )
     }
 
-
     private var digidexId: Int = -1
-    private var isDigiDexCreated = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,11 +74,13 @@ class SelectDigimonsActivity : AppCompatActivity() {
         }
 
         binding.confirmButton.setOnClickListener {
-            val selectedDigimonsIds = adapter.getSelectedDigimons()
-            if (selectedDigimonsIds.isEmpty()) {
-                Toast.makeText(this, "Select at least one digimon", Toast.LENGTH_SHORT).show()
-            } else {
-                viewModel.addDigimonstoDigidex(digidexId, selectedDigimonsIds)
+            viewModel.isDigiDexEmpty(digidexId) { isEmpty ->
+                if (isEmpty) {
+                    Toast.makeText(this, "Add at least one digimon", Toast.LENGTH_SHORT).show()
+                } else {
+                    val selectedDigimonsIds = adapter.getSelectedDigimons()
+                    viewModel.addDigimonstoDigidex(digidexId, selectedDigimonsIds)
+                }
             }
         }
     }

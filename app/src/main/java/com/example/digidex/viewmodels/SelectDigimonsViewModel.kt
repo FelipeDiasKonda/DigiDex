@@ -199,4 +199,13 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
             _digimonDetails.postValue(digimon)
         }
     }
+
+    fun isDigiDexEmpty(digidexId: Int, callback: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val digimonIdsLiveData = repository.getDigimonIdsForDigidex(digidexId)
+            digimonIdsLiveData.observeForever { digimonIds ->
+                callback(digimonIds.isNullOrEmpty())
+            }
+        }
+    }
 }
