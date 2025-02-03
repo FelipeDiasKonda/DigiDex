@@ -72,16 +72,26 @@ class SelectDigimonsActivity : AppCompatActivity() {
         viewModel.digimons.observe(this) { digimons ->
             adapter.submitList(digimons)
         }
-
         binding.confirmButton.setOnClickListener {
             val selectedDigimonsIds = adapter.getSelectedDigimons()
             if (selectedDigimonsIds.isEmpty()) {
-                Toast.makeText(this, getString(R.string.empty_digidex), Toast.LENGTH_SHORT).show()
+                viewModel.isDigiDexEmpty(digidexId) { isEmpty ->
+                    if (isEmpty) {
+                        Toast.makeText(this, getString(R.string.empty_digidex), Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        finish()
+                    }
+                }
             } else {
                 viewModel.addDigimonstoDigidex(digidexId, selectedDigimonsIds) {
                     viewModel.isDigiDexEmpty(digidexId) { isEmpty ->
                         if (isEmpty) {
-                            Toast.makeText(this, getString(R.string.empty_digidex), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this,
+                                getString(R.string.empty_digidex),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else {
                             finish()
                         }
