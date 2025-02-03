@@ -13,6 +13,9 @@
     <string name="digimon_image">imagem</string>
     <string name="conclude_btn">Concluir</string>
     <string name="add_digimon_btn">Adicionar Digimon ao Digidex</string>
+    <string name="empty_digidex">Adicione pelo menos um Digimon</string>
+    <string name="empty_title">Título não pode ser vazio</string>
+    <string name="api_failure">Falha ao carregar detalhes do Digimon</string>
     <string-array name="level_filter">
         <item>Campos</item>
         <item>Baby I</item>
