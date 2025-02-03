@@ -51,7 +51,7 @@ class SelectDigimonsActivity : AppCompatActivity() {
             digimon?.let {
                 showDigimonDetailsDialog(it)
             } ?: run {
-                Toast.makeText(this, "Failed to fetch Digimon details", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.api_failure), Toast.LENGTH_SHORT).show()
             }
         }
         viewModel.finishActivity.observe(this, Observer { shouldFinish ->
@@ -72,14 +72,30 @@ class SelectDigimonsActivity : AppCompatActivity() {
         viewModel.digimons.observe(this) { digimons ->
             adapter.submitList(digimons)
         }
-
         binding.confirmButton.setOnClickListener {
-            viewModel.isDigiDexEmpty(digidexId) { isEmpty ->
-                if (isEmpty) {
-                    Toast.makeText(this, "Add at least one digimon", Toast.LENGTH_SHORT).show()
-                } else {
-                    val selectedDigimonsIds = adapter.getSelectedDigimons()
-                    viewModel.addDigimonstoDigidex(digidexId, selectedDigimonsIds)
+            val selectedDigimonsIds = adapter.getSelectedDigimons()
+            if (selectedDigimonsIds.isEmpty()) {
+                viewModel.isDigiDexEmpty(digidexId) { isEmpty ->
+                    if (isEmpty) {
+                        Toast.makeText(this, getString(R.string.empty_digidex), Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        finish()
+                    }
+                }
+            } else {
+                viewModel.addDigimonstoDigidex(digidexId, selectedDigimonsIds) {
+                    viewModel.isDigiDexEmpty(digidexId) { isEmpty ->
+                        if (isEmpty) {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.empty_digidex),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            finish()
+                        }
+                    }
                 }
             }
         }

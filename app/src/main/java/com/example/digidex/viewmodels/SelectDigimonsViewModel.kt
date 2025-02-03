@@ -3,11 +3,13 @@ package com.example.digidex.viewmodels
 import android.app.Application
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
+import com.example.digidex.R
 import com.example.digidex.apiconfig.RetrofitInstance
 import com.example.digidex.database.db.DigiDatabase
 import com.example.digidex.database.models.DigimonModel
@@ -70,7 +72,7 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    fun addDigimonstoDigidex(digidexId: Int, digimons: List<Int>) {
+    fun addDigimonstoDigidex(digidexId: Int, digimons: List<Int>, callback: () -> Unit) {
         viewModelScope.launch {
             try {
                 if (repository.digidexExists(digidexId)) {
@@ -79,12 +81,7 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
                     }
                     saveJobs.awaitAll()
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            getApplication<Application>().applicationContext,
-                            "Digimons adicionados ao DigiDex",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        _finishActivity.value = true
+                        callback()
                     }
                 } else {
                     Log.e("DIGIDEX_ERROR", "ID do DigiDex inválido: $digidexId")

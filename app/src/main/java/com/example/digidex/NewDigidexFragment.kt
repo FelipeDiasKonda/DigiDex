@@ -74,7 +74,7 @@ class NewDigidexFragment : BottomSheetDialogFragment() {
 
                 Toast.makeText(
                     requireContext(),
-                    "Title can´t be empty",
+                    getString(R.string.empty_title),
                     Toast.LENGTH_SHORT
                 ).show()
             }
