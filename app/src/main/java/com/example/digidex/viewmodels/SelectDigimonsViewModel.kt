@@ -2,14 +2,11 @@ package com.example.digidex.viewmodels
 
 import android.app.Application
 import android.util.Log
-import android.widget.Toast
-import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
-import com.example.digidex.R
 import com.example.digidex.apiconfig.RetrofitInstance
 import com.example.digidex.database.db.DigiDatabase
 import com.example.digidex.database.models.DigimonModel
@@ -29,9 +26,11 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
     val digimons: LiveData<List<DigimonModel>> get() = _digimons
     private val _digimonDetails = MutableLiveData<DigimonModel?>()
     val digimonDetails: LiveData<DigimonModel?> get() = _digimonDetails
-    private val _finishActivity = MutableLiveData<Boolean>()
-    val finishActivity: LiveData<Boolean> get() = _finishActivity
     private val _selectedFilter = MutableLiveData<Pair<String?, String?>>()
+
+    private var isDigiDexEmpty: Boolean = true
+
+
 
     init {
         val database = DigiDatabase(application)
@@ -92,7 +91,7 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    fun addOneDigimontoDigidex(digidexId: Int, digimons: List<Int>) {
+    fun addOneDigimontoDigidex(digidexId: Int, digimons: List<Int>, callback: (() -> Unit)? = null) {
         viewModelScope.launch {
             try {
                 if (repository.digidexExists(digidexId)) {
@@ -102,6 +101,7 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
                     saveJobs.awaitAll()
                     val filter = _selectedFilter.value
                     fetchDigimons(filter?.first, filter?.second)
+                    callback?.invoke()
                 } else {
                     Log.e("DIGIDEX_ERROR", "Invalid DigiDex ID: $digidexId")
                 }
@@ -196,13 +196,10 @@ class SelectDigimonsViewModel(application: Application) : AndroidViewModel(appli
             _digimonDetails.postValue(digimon)
         }
     }
-
-    fun isDigiDexEmpty(digidexId: Int, callback: (Boolean) -> Unit) {
-        viewModelScope.launch {
-            val digimonIdsLiveData = repository.getDigimonIdsForDigidex(digidexId)
-            digimonIdsLiveData.observeForever { digimonIds ->
-                callback(digimonIds.isNullOrEmpty())
-            }
-        }
+    fun setDigiDexNotEmpty() {
+        isDigiDexEmpty = false
+    }
+    fun isDigiDexEmpty(callback: (Boolean) -> Unit) {
+        callback(isDigiDexEmpty)
     }
 }

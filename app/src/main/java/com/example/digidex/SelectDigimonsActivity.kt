@@ -7,7 +7,6 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
@@ -54,11 +53,6 @@ class SelectDigimonsActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.api_failure), Toast.LENGTH_SHORT).show()
             }
         }
-        viewModel.finishActivity.observe(this, Observer { shouldFinish ->
-            if (shouldFinish == true) {
-                finish()
-            }
-        })
 
     }
 
@@ -75,18 +69,17 @@ class SelectDigimonsActivity : AppCompatActivity() {
         binding.confirmButton.setOnClickListener {
             val selectedDigimonsIds = adapter.getSelectedDigimons()
             if (selectedDigimonsIds.isEmpty()) {
+                checkIfDigiDexIsEmptyAndFinish()
+            } else {
                 viewModel.addDigimonstoDigidex(digidexId, selectedDigimonsIds) {
-                    checkIfDigiDexIsEmptyAndFinish()
-                }
-            }else{
-                viewModel.addDigimonstoDigidex(digidexId,selectedDigimonsIds){
                     finish()
                 }
             }
         }
     }
+
     private fun checkIfDigiDexIsEmptyAndFinish() {
-        viewModel.isDigiDexEmpty(digidexId) { isEmpty ->
+        viewModel.isDigiDexEmpty { isEmpty ->
             if (isEmpty) {
                 Toast.makeText(this, getString(R.string.empty_digidex), Toast.LENGTH_SHORT).show()
             } else {
@@ -180,7 +173,10 @@ class SelectDigimonsActivity : AppCompatActivity() {
             .create()
 
         dialogBinding.addDigimonButton.setOnClickListener {
-            viewModel.addOneDigimontoDigidex(digidexId, listOf(digimon.id))
+            viewModel.addOneDigimontoDigidex(digidexId, listOf(digimon.id)) {
+                viewModel.setDigiDexNotEmpty()
+                Toast.makeText(this, "Digimon adicionado ao DigiDex", Toast.LENGTH_SHORT).show()
+            }
             dialog.dismiss()
         }
 
